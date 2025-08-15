@@ -44,7 +44,7 @@ pipeline{
       }
     }
 
-    stage('Publish') {
+  stage('Publish') {
       steps {
         bat "dotnet publish src\\YourApp\\YourApp.csproj -c %CONFIG% -o %PUBLISH_DIR% || exit /b 0"
       }
