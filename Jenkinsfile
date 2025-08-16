@@ -1,77 +1,71 @@
-pipeline{
-    agent any
-      environment {
+pipeline {
+  agent { label 'windows' }   // or: agent any (if your default agent is Windows)
+  options { timestamps(); ansiColor('xterm') }
+  tools { git 'Default' }     // uses the Git tool you configured in Manage Jenkins → Tools
+
+  environment {
     DOTNET_CLI_TELEMETRY_OPTOUT = '1'
-    DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
-    CONFIG = 'Debug'
-    PUBLISH_DIR = 'publish'
+    NUGET_PACKAGES = "${env.WORKSPACE}\\.nuget"           // optional: per-build NuGet cache
+    PUBLISH_DIR     = "${env.WORKSPACE}\\publish"
+    SOLUTION        = "MyApi.sln"                         // change to your .sln
+    PROJECT         = "src\\MyApi\\MyApi.csproj"          // change to your .csproj
   }
-  options {
-      //enables timestamps in the console log for your build.
-    timestamps()
-  }
-    tools {
-        git 'Default'   // 👈 must match the name you configured
-    }
-    stages {
-   stage('Checkout') {
-     steps {
-         //This means you don’t have to manually specify the repository URL, branch, credentials, etc.,
-         //in the pipeline — Jenkins uses the job’s SCM configuration automatically.
-           checkout scm
-       }
-    }
-   /* stage('Dotnet Info') {
+
+  stages {
+    stage('Checkout') {
       steps {
-          //That stage in your Jenkins Pipeline is simply running a .NET CLI command inside Windows to
-          //display the system’s .NET environment details.
-        bat label: 'dotnet --info (Windows)', script: 'dotnet --info', returnStatus: true
-      }
-    }
-      stage('Restore') {
-      steps {
-          //That stage is restoring the NuGet packages for your .NET solution before building it.
-        bat 'dotnet restore YourApp.sln || exit /b 0'
-      }
-    }*/
-      stage('Build') {
-      steps {
-          //Building the project
-        bat "dotnet build YourApp.sln -c ${env.CONFIG} --no-restore || exit /b 0"
-      }
-    }
-    /* stage('Test') {
-      steps {
-        // Runs all tests; remove if no test projects
-        bat "dotnet test YourApp.sln -c ${env.CONFIG} --no-build --logger \"trx\" || exit /b 0"
+        checkout([$class: 'GitSCM',
+          branches: [[name: '*/main']],                   // or */develop
+          gitTool: 'Default',
+          userRemoteConfigs: [[
+            url: 'https://your.git.server/your-repo.git',
+            credentialsId: 'CoreTest'
+          ]]
+        ])
       }
     }
 
-  stage('Publish') {
+    stage('Restore') {
       steps {
-        bat "dotnet publish src\\YourApp\\YourApp.csproj -c %CONFIG% -o %PUBLISH_DIR% || exit /b 0"
+        bat 'dotnet --info'
+        bat 'dotnet restore "%SOLUTION%"'
       }
     }
-*/
-    stage('Archive artifacts') {
+
+    stage('Build') {
       steps {
-        archiveArtifacts artifacts: "${env.PUBLISH_DIR}/**", fingerprint: true, onlyIfSuccessful: true
+        bat 'dotnet build "%SOLUTION%" -c Release --no-restore'
       }
     }
-    
+
+    stage('Test') {
+      when { expression { fileExists('tests') || fileExists('Test') } }
+      steps {
+        // TRX is fine to archive; if you prefer JUnit, add the junit logger and publish with junit step.
+        bat 'dotnet test "%SOLUTION%" -c Release --no-build --logger "trx;LogFileName=test-results.trx"'
+        archiveArtifacts artifacts: '**/TestResults/*.trx', onlyIfSuccessful: true
+      }
     }
-    post {
+
+    stage('Publish') {
+      steps {
+        bat 'if not exist "%PUBLISH_DIR%" mkdir "%PUBLISH_DIR%"'
+        bat 'dotnet publish "%PROJECT%" -c Release -o "%PUBLISH_DIR%" --no-build'
+      }
+    }
+
+    stage('Archive Artifacts') {
+      steps {
+        // Will fail the build if nothing is produced, which avoids the confusing "No artifacts found" warning.
+        archiveArtifacts artifacts: 'publish/**', allowEmptyArchive: false, fingerprint: true
+      }
+    }
+  }
+
+  post {
     always {
-      // If you produced TRX logs, you can archive them:
-      archiveArtifacts artifacts: '**/TestResults/**/*.trx', allowEmptyArchive: true
-    }
-    success {
-      echo 'Build succeeded 🎉'
-    }
-    failure {
-        mail to: 'karthikraja7316@gmail.com',
-             subject: 'Jenkins Build Failed',
-             body: 'The build has failed. Please check the Jenkins console output for details.'
+      // keep workspace tidy between builds
+      cleanWs()
     }
   }
 }
