@@ -15,10 +15,10 @@ pipeline {
     stage('Checkout') {
       steps {
         checkout([$class: 'GitSCM',
-          branches: [[name: '*/main']],                   // or */develop
+          branches: [[name: '*/master']],                   // or */develop
           gitTool: 'Default',
           userRemoteConfigs: [[
-            url: 'https://your.git.server/your-repo.git',
+            url: 'https://github.com/kr-005/LoginWebAPI.git',
             credentialsId: 'CoreTest'
           ]]
         ])
