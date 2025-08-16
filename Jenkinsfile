@@ -10,6 +10,9 @@ pipeline{
       //enables timestamps in the console log for your build.
     timestamps()
   }
+    tools {
+        git 'Default'   // 👈 must match the name you configured
+    }
     stages {
    stage('Checkout') {
      steps {
