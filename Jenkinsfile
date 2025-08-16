@@ -34,7 +34,7 @@ pipeline {
 
     stage('Build') {
       steps {
-        bat 'dotnet build "CoreWebAPI/LoginWebAPI.sln" -c Release --no-restore'
+        bat 'dotnet build "LoginWebAPI.sln" -c Release --no-restore'
       }
     }
 
