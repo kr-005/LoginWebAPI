@@ -25,12 +25,12 @@ pipeline {
       }
     }
 
-    stage('Restore') {
+  /*  stage('Restore') {
       steps {
         bat 'dotnet --info'
         bat 'dotnet restore "%SOLUTION%"'
       }
-    }
+    }*/
 
     stage('Build') {
       steps {
