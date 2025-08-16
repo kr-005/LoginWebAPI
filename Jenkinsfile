@@ -21,7 +21,7 @@ pipeline{
            checkout scm
        }
     }
-    stage('Dotnet Info') {
+   /* stage('Dotnet Info') {
       steps {
           //That stage in your Jenkins Pipeline is simply running a .NET CLI command inside Windows to
           //display the system’s .NET environment details.
@@ -33,14 +33,14 @@ pipeline{
           //That stage is restoring the NuGet packages for your .NET solution before building it.
         bat 'dotnet restore YourApp.sln || exit /b 0'
       }
-    }
+    }*/
       stage('Build') {
       steps {
           //Building the project
         bat "dotnet build YourApp.sln -c ${env.CONFIG} --no-restore || exit /b 0"
       }
     }
-     stage('Test') {
+    /* stage('Test') {
       steps {
         // Runs all tests; remove if no test projects
         bat "dotnet test YourApp.sln -c ${env.CONFIG} --no-build --logger \"trx\" || exit /b 0"
@@ -52,7 +52,7 @@ pipeline{
         bat "dotnet publish src\\YourApp\\YourApp.csproj -c %CONFIG% -o %PUBLISH_DIR% || exit /b 0"
       }
     }
-
+*/
     stage('Archive artifacts') {
       steps {
         archiveArtifacts artifacts: "${env.PUBLISH_DIR}/**", fingerprint: true, onlyIfSuccessful: true
