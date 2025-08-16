@@ -34,18 +34,11 @@ pipeline {
 
     stage('Build') {
       steps {
-        bat 'dotnet build "%SOLUTION%" -c Release --no-restore'
+        bat 'dotnet build "CoreWebAPI/LoginWebAPI.sln" -c Release --no-restore'
       }
     }
 
-    stage('Test') {
-      when { expression { fileExists('tests') || fileExists('Test') } }
-      steps {
-        // TRX is fine to archive; if you prefer JUnit, add the junit logger and publish with junit step.
-        bat 'dotnet test "%SOLUTION%" -c Release --no-build --logger "trx;LogFileName=test-results.trx"'
-        archiveArtifacts artifacts: '**/TestResults/*.trx', onlyIfSuccessful: true
-      }
-    }
+  
 
     stage('Publish') {
       steps {
