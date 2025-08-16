@@ -1,6 +1,6 @@
 pipeline {
   agent { label 'windows' }   // or: agent any (if your default agent is Windows)
-  options { timestamps(); ansiColor('xterm') }
+  options { timestamps()}
   tools { git 'Default' }     // uses the Git tool you configured in Manage Jenkins → Tools
 
   environment {
