@@ -27,17 +27,15 @@ pipeline {
 
   stage('Restore') {
     steps {
-        dir('CoreWebAPI') {
+        //dir('CoreWebAPI') {
             bat 'dotnet restore "LoginWebAPI.sln"'
-        }
+        //}
     }
 }
 
 stage('Build') {
     steps {
-        dir('CoreWebAPI') {
             bat 'dotnet build "LoginWebAPI.sln" -c Release'
-        }
     }
 }
 
