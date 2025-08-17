@@ -8,7 +8,7 @@ pipeline {
     NUGET_PACKAGES = "${env.WORKSPACE}\\.nuget"           // optional: per-build NuGet cache
     PUBLISH_DIR     = "${env.WORKSPACE}\\publish"
     SOLUTION        = "MyApi.sln"                         // change to your .sln
-    PROJECT         = "src\\MyApi\\MyApi.csproj"          // change to your .csproj
+    PROJECT         = "LoginWebAPI.csproj"          // change to your .csproj
   }
 
   stages {
