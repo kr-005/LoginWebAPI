@@ -48,18 +48,18 @@ stage('Build') {
       }
     }
 
-    stage('Archive Artifacts') {
+    /*stage('Archive Artifacts') {
       steps {
         // Will fail the build if nothing is produced, which avoids the confusing "No artifacts found" warning.
         archiveArtifacts artifacts: 'publish/**', allowEmptyArchive: false, fingerprint: true
       }
-    }
+    }*/
   }
 
   post {
-    always {
+    /*always {
       // keep workspace tidy between builds
       cleanWs()
-    }
+    }*/
   }
 }
