@@ -56,10 +56,25 @@ stage('Build') {
     }*/
   }
 
-  /*post {
-    always {
+  post {
+    /*always {
       // keep workspace tidy between builds
       cleanWs()
+    }*/
+    success {
+        emailext(
+            subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: "Jenkies COREAPI Build completed successfully. Check console output at ${env.BUILD_URL}",
+            to: "kr018340@gmail.com"
+        )
     }
-  }*/
+    failure {
+        emailext(
+            subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: "Jenkies CoreAPI Build failed.",
+            to: "kr018340@gmail.com"
+        )
+    }
+
+  }
 }
