@@ -6,20 +6,20 @@ pipeline {
   environment {
     DOTNET_CLI_TELEMETRY_OPTOUT = '1'
     NUGET_PACKAGES = "${env.WORKSPACE}\\.nuget"           // optional: per-build NuGet cache
-    PUBLISH_DIR     = "${env.WORKSPACE}\\publish"
-    SOLUTION        = "LoginWebAPI.sln"                         // change to your .sln
-    PROJECT         = "LoginWebAPI.csproj"          // change to your .csproj
+    PUBLISH_DIR     = "${env.WORKSPACE}\\publish"         //Publish Path
+    SOLUTION        = "LoginWebAPI.sln"                   // change to your .sln
+    PROJECT         = "LoginWebAPI.csproj"                // change to your .csproj
   }
 
   stages {
     stage('Checkout') {
       steps {
         checkout([$class: 'GitSCM',
-          branches: [[name: '*/master']],                   // or */develop
-          gitTool: 'Default',
+          branches: [[name: '*/master']],                     // branch
+          gitTool: 'Default',                                 // Jenkies option
           userRemoteConfigs: [[
-            url: 'https://github.com/kr-005/LoginWebAPI.git',
-            credentialsId: 'CoreTest'
+            url: 'https://github.com/kr-005/LoginWebAPI.git', //git repo path
+            credentialsId: 'CoreTest'                         // Git Credential save in Jenkies Name
           ]]
         ])
       }
@@ -27,7 +27,7 @@ pipeline {
 
   stage('Restore') {
     steps {
-        //dir('CoreWebAPI') {
+        //dir('CoreWebAPI') {                                    //Project want to stored in some other Path File
             bat 'dotnet restore "LoginWebAPI.sln"'
         //}
     }
