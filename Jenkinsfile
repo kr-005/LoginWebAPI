@@ -56,10 +56,10 @@ stage('Build') {
     }*/
   }
 
-  post {
-    /*always {
+  /*post {
+    always {
       // keep workspace tidy between builds
       cleanWs()
-    }*/
-  }
+    }
+  }*/
 }
