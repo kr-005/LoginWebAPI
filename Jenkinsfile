@@ -7,7 +7,7 @@ pipeline {
     DOTNET_CLI_TELEMETRY_OPTOUT = '1'
     NUGET_PACKAGES = "${env.WORKSPACE}\\.nuget"           // optional: per-build NuGet cache
     PUBLISH_DIR     = "${env.WORKSPACE}\\publish"
-    SOLUTION        = "MyApi.sln"                         // change to your .sln
+    SOLUTION        = "LoginWebAPI.sln"                         // change to your .sln
     PROJECT         = "LoginWebAPI.csproj"          // change to your .csproj
   }
 
