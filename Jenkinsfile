@@ -49,13 +49,13 @@ stage('Build') {
     stage('Login to Docker Hub') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: '5fadb9c4-f706-4465-8fcb-a41718e33286	',
+                   /* withCredentials([usernamePassword(credentialsId: '5fadb9c4-f706-4465-8fcb-a41718e33286	',
                                                       usernameVariable: 'DOCKER_USER',
-                                                      passwordVariable: 'DOCKER_PASS')]) {
+                                                      passwordVariable: 'DOCKER_PASS')]) {*/
                         bat """
-                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                        echo %15221167kK% | docker login -u %kr005% --password-stdin
                         """
-                    }
+                    //}
                 }
             }
         }
