@@ -42,6 +42,7 @@ stage('Build') {
  stage('Build Docker Image') {
             steps {
                 script {
+                    
                     bat "docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% ."
                 }
             }
