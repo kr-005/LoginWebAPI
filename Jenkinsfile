@@ -10,7 +10,7 @@ pipeline {
     SOLUTION        = "LoginWebAPI.sln"                   // change to your .sln
     PROJECT         = "LoginWebAPI.csproj"                // change to your .csproj
     DOCKER_IMAGE = "kr005/coreapi"                        //Docker UserName/Image Repo name
-    DOCKER_TAG   = "0.1"                                  // Version 
+    DOCKER_TAG   = "latest"                                  // Version 
   }
 
   stages {
