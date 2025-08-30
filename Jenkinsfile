@@ -9,6 +9,8 @@ pipeline {
     PUBLISH_DIR     = "${env.WORKSPACE}\\publish"         //Publish Path
     SOLUTION        = "LoginWebAPI.sln"                   // change to your .sln
     PROJECT         = "LoginWebAPI.csproj"                // change to your .csproj
+    DOCKER_IMAGE = "kr005/coreapi"                        //Docker UserName/Image Repo name
+    DOCKER_TAG   = "0.1"                                  // Version 
   }
 
   stages {
@@ -32,15 +34,38 @@ pipeline {
         //}
     }
 }
-
 stage('Build') {
     steps {
             bat 'dotnet build "LoginWebAPI.sln" -c Release'
     }
 }
-
-  
-
+ stage('Build Docker Image') {
+            steps {
+                script {
+                    bat "docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% ."
+                }
+            }
+        }
+    stage('Login to Docker Hub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: '5fadb9c4-f706-4465-8fcb-a41718e33286	',
+                                                      usernameVariable: 'DOCKER_USER',
+                                                      passwordVariable: 'DOCKER_PASS')]) {
+                        bat """
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                        """
+                    }
+                }
+            }
+        }
+    stage('Push Docker Image') {
+            steps {
+                script {
+                    bat "docker push %DOCKER_IMAGE%:%DOCKER_TAG%"
+                }
+            }
+        }
     stage('Publish') {
       steps {
         bat 'if not exist "%PUBLISH_DIR%" mkdir "%PUBLISH_DIR%"'
